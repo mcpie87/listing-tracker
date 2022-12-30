@@ -1,0 +1,159 @@
+<style>
+#note {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 600px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+#main {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    width: 600px;
+    border: 1px solid #000;
+}
+
+#counter {
+    font-size: 5em;
+}
+#botans {
+    display: flex;
+    flex-direction: row;
+}
+
+#current-values, #history {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+#current-values div, #history-changes div {
+    display: flex;
+    flex-direction: row;
+    margin: 0 5 0 5;
+}
+
+.dark-mode {
+    color: #fff;
+    background: #000;
+}
+.dark-mode #main {
+    border-color: #fff;
+}
+</style>
+<body>
+    <div id="note">
+        Everything is using UTC</br>
+        History refreshes automatically after 24h of listing.</br>
+        <button id="dark" onclick="toggleDark()">toggle inferior mode</button>
+    </div>
+
+    <div id="main">
+        <div id="counter">0</div>
+        <div id="botans">
+            <button id="increment" onclick="addValue()">Increment</button>
+        </div>
+        <div>
+            <label>Comment</label><input type="text" id="comment"/>
+        </div>
+        <div id="current">
+            <div id="current-title">Current listings (past 24h)</div>
+            <div id="current-values"></div>
+        </div>
+        <div id="history">
+            <div id="history-header">History (24h < x < 72h)</div>
+            <div id="history-changes">-</div>
+        </div>
+    </div>
+</body>
+
+<script>
+function turnOnDark() {
+    const element = document.body;
+    element.classList.toggle("dark-mode");
+}
+function toggleDark() {
+    turnOnDark();
+    localStorage.darkMode = !localStorage.darkMode;
+}
+function getHistory() {
+    return JSON.parse(localStorage.history);
+}
+function updateHistory(item) {
+    const filteredHistory = item.filter(e => e[0] > 72*3600*1000)
+    localStorage.setItem('history', JSON.stringify(item));
+}
+function pushHistory(item) {
+    const history = getHistory();
+    history.push([(new Date()).toISOString(), item]);
+    updateHistory(history);
+}
+function updateCounter() {
+    const counterNode = document.getElementById("counter");
+    counterNode.innerHTML = getHistory().filter(e => new Date() - new Date(e[0]) < 24*3600*1000).length;
+}
+
+function nodeDelete(dateVal) {
+    const history = getHistory().filter(e => +(new Date(e[0])) != dateVal);
+    updateHistory(history);
+    update();
+}
+
+function updateHistoryNodes() {
+    const historyNode = document.getElementById("history-changes")
+    historyNode.innerHTML = "";
+    const currentValuesNode = document.getElementById("current-values")
+    currentValuesNode.innerHTML = "";
+    const history = getHistory();
+    history.reverse().forEach((e) => {
+        const entry = document.createElement("div");
+        const date = e[0];
+        const dateVal = new Date(date);
+        const delta = new Date() - new Date(date);
+        const comment = e[1];
+        entry.innerHTML = `
+            <div>${date}</div>
+            <div>${comment}</div>
+            <button id="${+dateVal}" onclick="nodeDelete(${+dateVal})">x</button>
+        `;
+        if (delta < 24*3600*1000) {
+            currentValuesNode.appendChild(entry);
+        } else if (delta < 72*3600*1000) {
+            historyNode.appendChild(entry);
+        }
+    })
+}
+function update() {
+    updateCounter();
+    updateHistoryNodes();
+}
+function addValue() {
+    pushHistory(document.getElementById("comment").value);
+    +localStorage.counter++
+    update();
+}
+function reset() {
+    pushHistory("RESET");
+    localStorage.counter = 0;
+    update();
+}
+
+if (!localStorage.history) {
+    updateHistory([]);
+    localStorage.counter = 0;
+    console.log('history updated to []');
+}
+
+if (localStorage.darkMode) {
+    turnOnDark();
+}
+
+update();
+setInterval(update, 1000);
+
+</script>
