@@ -49,7 +49,7 @@
 <body>
     <div id="note">
         Everything is using UTC</br>
-        History refreshes automatically after 24h of listing.</br>
+        History refreshes automatically at 10:00 UTC</br>
         <button id="dark" onclick="toggleDark()">toggle inferior mode</button>
     </div>
 
@@ -66,7 +66,7 @@
             <div id="current-values"></div>
         </div>
         <div id="history">
-            <div id="history-header">History (24h < x < 72h)</div>
+            <div id="history-header">Last 3 days</div>
             <div id="history-changes">-</div>
         </div>
     </div>
@@ -79,7 +79,7 @@ function turnOnDark() {
 }
 function toggleDark() {
     turnOnDark();
-    localStorage.darkMode = !localStorage.darkMode;
+    localStorage.darkMode = !JSON.parse(localStorage.darkMode);
 }
 function getHistory() {
     return JSON.parse(localStorage.history);
@@ -95,7 +95,7 @@ function pushHistory(item) {
 }
 function updateCounter() {
     const counterNode = document.getElementById("counter");
-    counterNode.innerHTML = getHistory().filter(e => new Date() - new Date(e[0]) < 24*3600*1000).length;
+    counterNode.innerHTML = getHistory().filter(e => getHoursFromReset(e[0]) >= 0).length;
 }
 
 function nodeDelete(dateVal) {
@@ -114,16 +114,16 @@ function updateHistoryNodes() {
         const entry = document.createElement("div");
         const date = e[0];
         const dateVal = new Date(date);
-        const delta = new Date() - new Date(date);
+        const hoursFromReset = getHoursFromReset(dateVal);
         const comment = e[1];
         entry.innerHTML = `
             <div>${date}</div>
             <div>${comment}</div>
             <button id="${+dateVal}" onclick="nodeDelete(${+dateVal})">x</button>
         `;
-        if (delta < 24*3600*1000) {
+        if (hoursFromReset >= 0) {
             currentValuesNode.appendChild(entry);
-        } else if (delta < 72*3600*1000) {
+        } else if (hoursFromReset > -72) {
             historyNode.appendChild(entry);
         }
     })
@@ -137,10 +137,15 @@ function addValue() {
     +localStorage.counter++
     update();
 }
-function reset() {
-    pushHistory("RESET");
-    localStorage.counter = 0;
-    update();
+
+function getHoursFromReset(d) {
+    const date = new Date(d);
+    const lastReset = new Date();
+    lastReset.setUTCHours(10);
+    lastReset.setUTCMinutes(0);
+    lastReset.setUTCSeconds(0);
+    // console.log(date.toISOString(), lastReset.toISOString(), (date - lastReset)/(60*60*1000));
+    return (date - lastReset)/(60*60*1000);
 }
 
 if (!localStorage.history) {
@@ -149,10 +154,9 @@ if (!localStorage.history) {
     console.log('history updated to []');
 }
 
-if (localStorage.darkMode) {
+if (JSON.parse(localStorage.darkMode)) {
     turnOnDark();
 }
-
 update();
 setInterval(update, 1000);
 
