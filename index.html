@@ -140,11 +140,15 @@ function addValue() {
 
 function getHoursFromReset(d) {
     const date = new Date(d);
-    const lastReset = new Date();
+    let lastReset = new Date();
+    const now = new Date();
     lastReset.setUTCHours(10);
     lastReset.setUTCMinutes(0);
     lastReset.setUTCSeconds(0);
-    // console.log(date.toISOString(), lastReset.toISOString(), (date - lastReset)/(60*60*1000));
+    if (now < lastReset) {
+        // date is set for "tomorrow", need to readjust
+        lastReset = new Date(lastReset.getTime() - 24*60*60*1000)
+    }
     return (date - lastReset)/(60*60*1000);
 }
 
