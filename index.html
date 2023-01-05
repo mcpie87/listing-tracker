@@ -179,14 +179,16 @@ function addValue() {
 }
 
 function clearHistory() {
-    const history = getHistory();
-    history.reverse().forEach((e) => {
-        const date = e[0];
-        const dateVal = new Date(date);
-        localStorage.removeItem(+dateVal);  
-    })
-    updateHistory([]);
-    update();
+    if (window.confirm("This will erase all listing history.")) {
+        const history = getHistory();
+        history.reverse().forEach((e) => {
+            const date = e[0];
+            const dateVal = new Date(date);
+            localStorage.removeItem(+dateVal);  
+        })
+        updateHistory([]);
+        update();
+    }
 }
 
 function getHoursFromReset(d) {
