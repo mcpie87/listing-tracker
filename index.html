@@ -126,15 +126,23 @@ function updateHistoryNodes() {
     history.reverse().forEach((e) => {
         const entry = document.createElement("div");
         const date = e[0];
+        const comment = e[1];
         const dateVal = new Date(date);
         const hoursFromReset = getHoursFromReset(dateVal);
-        const comment = e[1];
-        entry.innerHTML = `
-        <div>${dateVal.toString().split('GMT')[0]}</div>
-        <div> | </div>
-        <div contenteditable="false" spellcheck="false">${comment}</div>
-        <button id="${+dateVal}" onclick="nodeDelete(${+dateVal})">x</button>
+        entry.id = +dateVal;
+        const storedListingHTML = localStorage.getItem(+dateVal);
+
+        if (storedListingHTML) {
+            entry.innerHTML = storedListingHTML;
+        } else {
+            entry.innerHTML = `
+            <div>${dateVal.toString().split('GMT')[0]}</div>
+            <div> | </div>
+            <div contenteditable="true" spellcheck="false">${comment}</div>
+            <button onclick="nodeDelete(${+dateVal})">x</button>
         `;
+        }
+
         if (hoursFromReset >= 0) {
             currentValuesNode.appendChild(entry);
         } else if (hoursFromReset > -72) {
@@ -143,7 +151,23 @@ function updateHistoryNodes() {
     })
 }
 
+function saveListingComments () {
+    saveChildrenInnerHTML("history-changes");
+    saveChildrenInnerHTML("current-values");
+}
+
+function saveChildrenInnerHTML (id) {
+    const currentNode = document.getElementById(id)
+    if (currentNode.hasChildNodes()) {
+        let children = currentNode.childNodes
+        for (const node of children) {
+            localStorage.setItem(node.id, node.innerHTML)
+        }
+    }
+}
+
 function update() {
+    saveListingComments();
     updateCounter();
     updateHistoryNodes();
 }
