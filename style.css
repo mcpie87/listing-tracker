@@ -8,6 +8,7 @@
     margin-bottom: 20px;
     text-align: center;
 }
+
 #note {
     margin: auto;
     display: flex;
@@ -25,7 +26,8 @@
     justify-content: space-between;
     align-items: center;
     width: 600px;
-    border: 1px solid #000;
+    border-style: solid;
+    border-width: 2px;
 }
 
 #counter {
@@ -47,10 +49,14 @@
     margin: 0 5 0 5;
 }
 
-.dark-mode {
-    color: #fff;
-    background: #000;
+body {
+    color: #9d9d9d;
+    background-color: #181a1b;
+    border-color: #9d9d9d;
 }
-.dark-mode #main {
-    border-color: #fff;
+
+.light-mode {
+    color: #181a1b;
+    background: #e8e6e3;
+    border-color: #736b5e;
 }

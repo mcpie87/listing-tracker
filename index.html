@@ -2,13 +2,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body onload=[update(),toggleDark()]>
+<body onload=[update()]>
     <div id="note">
         <h1>Lost Ark Listing Tracker</h1>
         Times are local</br>
         Listings refresh automatically at 10:00 UTC</br>
         <p></p>
-        <button id="dark" onclick="toggleDark()">Toggle dark mode</button>
+        <button id="dark" onclick="toggleLight()">Toggle dark mode</button>
         <p></p>
         <button id="reset" onclick="clearHistory()">Clear history</button>
     </div>
@@ -32,13 +32,13 @@
 </body>
 
 <script>
-function turnOnDark() {
+function turnOnLight() {
     const element = document.body;
-    element.classList.toggle("dark-mode");
+    element.classList.toggle("light-mode");
 }
-function toggleDark() {
-    turnOnDark();
-    localStorage.darkMode = !JSON.parse(localStorage.darkMode);
+function toggleLight() {
+    turnOnLight();
+    localStorage.lightMode = !JSON.parse(localStorage.lightMode);
 }
 function getHistory() {
     return JSON.parse(localStorage.history);
