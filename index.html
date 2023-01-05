@@ -113,6 +113,7 @@ function updateCounter() {
 
 function nodeDelete(dateVal) {
     const history = getHistory().filter(e => +(new Date(e[0])) != dateVal);
+    localStorage.removeItem(+dateVal);
     updateHistory(history);
     update();
 }
@@ -178,7 +179,13 @@ function addValue() {
 }
 
 function clearHistory() {
-    updateHistory([])
+    const history = getHistory();
+    history.reverse().forEach((e) => {
+        const date = e[0];
+        const dateVal = new Date(date);
+        localStorage.removeItem(+dateVal);  
+    })
+    updateHistory([]);
     update();
 }
 
