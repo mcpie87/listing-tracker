@@ -56,7 +56,7 @@
     border-color: #fff;
 }
 </style>
-<body>
+<body onload=[update(),toggleDark()]>
     <div id="note">
         <h1>Lost Ark Listing Tracker</h1>
         Times are local</br>
@@ -206,7 +206,6 @@ if (JSON.parse(localStorage.darkMode)) {
     turnOnDark();
 }
 
-update();
 setInterval(update, 1000);
 
 </script>
