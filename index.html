@@ -52,9 +52,14 @@ function pushHistory(item) {
     history.push([(new Date()), item]);
     updateHistory(history);
 }
+
+function getCounter() {
+    return getHistory().filter(e => getHoursFromReset(e[0]) >= 0).length;
+}
+
 function updateCounter() {
     const counterNode = document.getElementById("counter");
-    counterNode.innerHTML = getHistory().filter(e => getHoursFromReset(e[0]) >= 0).length;
+    counterNode.innerHTML = getCounter()
 }
 
 function nodeDelete(dateVal) {
@@ -79,16 +84,12 @@ function updateHistoryNodes() {
         entry.id = +dateVal;
         const storedListingHTML = localStorage.getItem(+dateVal);
 
-        if (storedListingHTML) {
-            entry.innerHTML = storedListingHTML;
-        } else {
-            entry.innerHTML = `
-            <div>${dateVal.toString().split('GMT')[0]}</div>
-            <div> | </div>
-            <div contenteditable="true" spellcheck="false">${comment}</div>
-            <button onclick="nodeDelete(${+dateVal})">x</button>
+        entry.innerHTML = storedListingHTML || `
+        <div>${dateVal.toString().split('GMT')[0]}</div>
+        <div> | </div>
+        <div contenteditable="true" spellcheck="false">${comment}</div>
+        <button onclick="nodeDelete(${+dateVal})">x</button>
         `;
-        }
 
         if (hoursFromReset >= 0) {
             currentValuesNode.appendChild(entry);
@@ -119,9 +120,13 @@ function update() {
     updateHistoryNodes();
 }
 function addValue() {
-    pushHistory(document.getElementById("comment").value);
-    +localStorage.counter++
-    update();
+    if (getCounter() >= 20) {
+        window.alert("Daily listing limit has been reached.")
+    } else {
+        pushHistory(document.getElementById("comment").value);
+        +localStorage.counter++
+        update();
+    }
 }
 
 function clearHistory() {
