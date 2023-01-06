@@ -131,5 +131,3 @@ if (!localStorage.history) {
 if (JSON.parse(localStorage.darkMode)) {
     turnOnDark();
 }
-
-setInterval(update, 1000);
