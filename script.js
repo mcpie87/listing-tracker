@@ -53,7 +53,7 @@ function updateHistoryNodes() {
         entry.innerHTML = storedListingHTML || `
         <div>${dateVal.toString().split('GMT')[0]}</div>
         <div> | </div>
-        <div contenteditable="true" spellcheck="false">${comment}</div>
+        <div class = "listingComment" contenteditable="true" spellcheck="false">${comment}</div>
         <button onclick="nodeDelete(${+dateVal})">x</button>
         `;
 
