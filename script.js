@@ -120,11 +120,11 @@ if (!localStorage.history) {
     console.log('history updated to []');
 }
 
-if (JSON.parse(localStorage.lightMode)) {
-    turnOnLight();
-}
-
-window.onbeforeunload = function() {
-    update();
-    return;
-}
+window.addEventListener('load', function() {
+    if (typeof localStorage.lightMode === 'undefined' || localStorage.lightMode === 'undefined') {
+        localStorage.lightMode = false;
+    }
+    if (JSON.parse(localStorage.lightMode)) {
+        turnOnLight();
+    }
+});
