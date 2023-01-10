@@ -87,6 +87,7 @@ function addListing() {
         window.alert("Daily listing limit has been reached.")
     } else {
         pushHistory(document.getElementById("comment").value);
+        document.getElementById("comment").value = ""
         update();
     }
 }
