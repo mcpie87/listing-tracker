@@ -81,6 +81,8 @@ function update() {
     updateHistory();
     updateCounter();
     updateListings();
+    const lastUpdate = document.getElementById("lastUpdate");
+    lastUpdate.textContent = "Last updated at " + (new Date()).toString().substring(16, 24);
 }
 
 function addListing() {
@@ -124,10 +126,16 @@ if (!localStorage.history) {
 }
 
 window.addEventListener('load', function() {
+    update(); 
+    this.setInterval(update, 300000);
     if (typeof localStorage.lightMode === 'undefined' || localStorage.lightMode === 'undefined') {
         localStorage.lightMode = false;
     }
     if (JSON.parse(localStorage.lightMode)) {
         turnOnLight();
     }
+});
+
+window.addEventListener('unload', function() {
+    update();
 });
