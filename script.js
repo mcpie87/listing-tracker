@@ -93,10 +93,7 @@ function addListing() {
 
 function clearHistory() {
     if (window.confirm("This will erase all listing history.")) {
-        const history = getHistory()
-        history.reverse().forEach((d) => {
-            localStorage.removeItem(d);
-        })
+        localStorage.clear();
         updateHistory([]);
         update();
     }
