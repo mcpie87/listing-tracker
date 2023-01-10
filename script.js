@@ -17,12 +17,14 @@ function updateHistory(history) {
 }
 function pushHistory(comment) {
     const history = getHistory();
-    history.push([(new Date()), comment]);
+    const dateVal = new Date();
+    localStorage.setItem(+dateVal, comment)
+    history.push(+dateVal);
     updateHistory(history);
 }
 
 function getCounter() {
-    return getHistory().filter(e => getHoursFromReset(e[0]) >= 0).length;
+    return getHistory().filter(e => getHoursFromReset(e) >= 0).length;
 }
 
 function updateCounter() {
@@ -31,53 +33,45 @@ function updateCounter() {
 }
 
 function nodeDelete(dateVal) {
-    const history = getHistory().filter(e => +(new Date(e[0])) != dateVal);
+    const history = getHistory().filter(e => e != dateVal);
     localStorage.removeItem(+dateVal);
     updateHistory(history);
     update();
 }
 
-function updateHistoryNodes() {
-    const historyNode = document.getElementById("history-changes")
+function updateListings() {
+    const historyNode = document.getElementById("history-changes");
     historyNode.innerHTML = "";
-    const currentValuesNode = document.getElementById("current-values")
+    const currentValuesNode = document.getElementById("current-values");
     currentValuesNode.innerHTML = "";
     const history = getHistory();
-    history.reverse().forEach((e) => {
-        const entry = document.createElement("div");
-        const date = e[0];
-        const comment = e[1];
-        const dateVal = new Date(date);
-        const hoursFromReset = getHoursFromReset(dateVal);
-        entry.id = +dateVal;
-        const storedListingHTML = localStorage.getItem(+dateVal);
-
-        entry.innerHTML = storedListingHTML || `
+    history.reverse().forEach((d) => {
+        const dateVal = new Date(d);
+        const comment = localStorage.getItem(+dateVal);
+        const listing = document.createElement("div");
+        listing.id = +dateVal;
+        listing.className = "listing";
+        listing.innerHTML = `
         <div class="listingDate">${dateVal.toString().split('GMT')[0]}</div>
         <div> | </div>
         <div class="listingComment" contenteditable="true" spellcheck="false">${comment}</div>
-        <button onclick="nodeDelete(${+dateVal})">x</button>
+        <button class="delete" onclick="nodeDelete(${+dateVal})">×</button>
         `;
-
-        if (hoursFromReset >= 0) {
-            currentValuesNode.appendChild(entry);
-        } else if (hoursFromReset > -72) {
-            historyNode.appendChild(entry);
+        if (getHoursFromReset(dateVal) >= 0) {
+            currentValuesNode.appendChild(listing);
+        } else if (getHoursFromReset(dateVal) > -72) {
+            historyNode.appendChild(listing);
         }
     })
 }
 
-function saveListingComments () {
-    saveChildrenInnerHTML("history-changes");
-    saveChildrenInnerHTML("current-values");
-}
 
-function saveChildrenInnerHTML (id) {
-    const currentNode = document.getElementById(id)
-    if (currentNode.hasChildNodes()) {
-        let children = currentNode.childNodes
-        for (const node of children) {
-            localStorage.setItem(node.id, node.innerHTML)
+function saveListingComments () {
+    const listings = document.getElementsByClassName("listing")
+    for (const listing of listings) {
+        const comment = listing.querySelector(".listingComment").textContent
+        if (localStorage.getItem(listing.id)) {
+            localStorage.setItem(listing.id, comment);
         }
     }
 }
@@ -85,21 +79,24 @@ function saveChildrenInnerHTML (id) {
 function update() {
     saveListingComments();
     updateCounter();
-    updateHistoryNodes();
+    updateListings();
 }
+
 function addListing() {
     if (getCounter() >= 20) {
         window.alert("Daily listing limit has been reached.")
     } else {
         pushHistory(document.getElementById("comment").value);
-        +localStorage.counter++
         update();
     }
 }
 
 function clearHistory() {
     if (window.confirm("This will erase all listing history.")) {
-        localStorage.clear();
+        const history = getHistory()
+        history.reverse().forEach((d) => {
+            localStorage.removeItem(d);
+        })
         updateHistory([]);
         update();
     }

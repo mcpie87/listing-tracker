@@ -1,4 +1,5 @@
 <head>
+    <META http-equiv="Content-Script-Type" content="text/javascript">
     <link rel="stylesheet" href="style/style.css">
     <script src="script.js"></script>
 </head>
@@ -9,16 +10,16 @@
         Times are local</br>
         Listings reset automatically at 10:00 UTC</br>
         <p></p>
-        <button id="dark" onclick="toggleLight()">Toggle dark mode</button>
+        <button class="button" id="dark" onclick="toggleLight()">Toggle dark mode</button>
         <p></p>
-        <button id="reset" onclick="clearHistory()">Clear history</button>
+        <button class="button" id="reset" onclick="clearHistory()">Clear history</button>
     </div>
 
     <div id="main">
         <div id="counter">0</div>
         <div id="botans">
             <input type="text" id="comment"/>
-            <button id="increment" onclick="addListing()">Add listing</button>
+            <button class="button" id="increment" onclick="addListing()">Add listing</button>
         <br>
         </div>
         <div id="current">

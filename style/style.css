@@ -38,12 +38,16 @@
     font-family: Metropolis,Arial,sans-serif;
 }
 
+.listing {
+    height: 25px;
+}
+
 .listingDate {
     width: 210px;
 }
 
 .listingComment {
-    width: 300px;
+    width: 220px;
 }
 
 #counter {
@@ -73,6 +77,46 @@ body {
 
 .light-mode {
     color: #181a1b;
-    background: #e8e6e3;
-    border-color: #736b5e;
+    background-color: #e8e6e3;
+    border-color: #181a1b;
+}
+
+.button {
+    display: inline-block;
+    padding: 3px 10px;
+    font-family: inherit;
+    cursor: pointer;
+    color: #181a1b;
+    background-color: #d5d1d1;
+    border: inherit;
+}
+
+  
+.button:hover {
+    opacity: 0.8;
+    box-shadow: 0px 0px 0px 1px #666;
+}
+
+.button:active {
+    box-shadow: 0px 0px 0px 1px #666;
+    transform: translateY(1px);
+}
+
+.delete {
+    display: inline-block;
+    font-family: inherit;
+    font-size: 15;
+    cursor: pointer;
+    color: inherit;
+    background-color: inherit;
+    outline: none;
+    border: none;
+}
+
+.delete:hover {
+    opacity: 0.6;
+}
+
+.delete:active {
+    transform: translateY(1px);
 }
