@@ -1,13 +1,13 @@
 <head>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style/style.css">
     <script src="script.js"></script>
 </head>
 
-<body onload="update(); setInterval(update, 1000)">
+<body onload="update(); setInterval(update, 10000)">
     <div id="note">
         <h1>Lost Ark Listing Tracker</h1>
         Times are local</br>
-        Listings refresh automatically at 10:00 UTC</br>
+        Listings reset automatically at 10:00 UTC</br>
         <p></p>
         <button id="dark" onclick="toggleLight()">Toggle dark mode</button>
         <p></p>
@@ -18,7 +18,7 @@
         <div id="counter">0</div>
         <div id="botans">
             <input type="text" id="comment"/>
-            <button id="increment" onclick="addValue()">Add listing</button>
+            <button id="increment" onclick="addListing()">Add listing</button>
         <br>
         </div>
         <div id="current">

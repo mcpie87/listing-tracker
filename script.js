@@ -6,16 +6,18 @@ function toggleLight() {
     turnOnLight();
     localStorage.lightMode = !JSON.parse(localStorage.lightMode);
 }
+
 function getHistory() {
     return JSON.parse(localStorage.history);
 }
-function updateHistory(item) {
-    const filteredHistory = item.filter(e => e[0] > 72*3600*1000)
-    localStorage.setItem('history', JSON.stringify(item));
+
+function updateHistory(history) {
+    const filteredHistory = history.filter(e => e[0] > 72*3600*1000)
+    localStorage.setItem('history', JSON.stringify(history));
 }
-function pushHistory(item) {
+function pushHistory(comment) {
     const history = getHistory();
-    history.push([(new Date()), item]);
+    history.push([(new Date()), comment]);
     updateHistory(history);
 }
 
@@ -51,9 +53,9 @@ function updateHistoryNodes() {
         const storedListingHTML = localStorage.getItem(+dateVal);
 
         entry.innerHTML = storedListingHTML || `
-        <div>${dateVal.toString().split('GMT')[0]}</div>
+        <div class="listingDate">${dateVal.toString().split('GMT')[0]}</div>
         <div> | </div>
-        <div class = "listingComment" contenteditable="true" spellcheck="false">${comment}</div>
+        <div class="listingComment" contenteditable="true" spellcheck="false">${comment}</div>
         <button onclick="nodeDelete(${+dateVal})">x</button>
         `;
 
@@ -85,7 +87,7 @@ function update() {
     updateCounter();
     updateHistoryNodes();
 }
-function addValue() {
+function addListing() {
     if (getCounter() >= 20) {
         window.alert("Daily listing limit has been reached.")
     } else {
@@ -97,12 +99,7 @@ function addValue() {
 
 function clearHistory() {
     if (window.confirm("This will erase all listing history.")) {
-        const history = getHistory();
-        history.reverse().forEach((e) => {
-            const date = e[0];
-            const dateVal = new Date(date);
-            localStorage.removeItem(+dateVal);  
-        })
+        localStorage.clear();
         updateHistory([]);
         update();
     }
@@ -128,6 +125,11 @@ if (!localStorage.history) {
     console.log('history updated to []');
 }
 
-if (JSON.parse(localStorage.darkMode)) {
-    turnOnDark();
+if (JSON.parse(localStorage.lightMode)) {
+    turnOnLight();
+}
+
+window.onbeforeunload = function() {
+    update();
+    return;
 }
