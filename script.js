@@ -11,8 +11,8 @@ function getHistory() {
     return JSON.parse(localStorage.history);
 }
 
-function updateHistory(history) {
-    const filteredHistory = history.filter(e => e[0] > 72*3600*1000)
+function updateHistory(history = getHistory()) {
+    const filteredHistory = history.filter(e => getHoursFromReset(e) > -72)
     localStorage.setItem('history', JSON.stringify(history));
 }
 function pushHistory(comment) {
@@ -59,7 +59,7 @@ function updateListings() {
         `;
         if (getHoursFromReset(dateVal) >= 0) {
             currentValuesNode.appendChild(listing);
-        } else if (getHoursFromReset(dateVal) > -72) {
+        } else {
             historyNode.appendChild(listing);
         }
     })
@@ -70,7 +70,7 @@ function saveListingComments () {
     const listings = document.getElementsByClassName("listing")
     for (const listing of listings) {
         const comment = listing.querySelector(".listingComment").textContent
-        if (localStorage.getItem(listing.id)) {
+        if (localStorage.getItem(listing.id) !== null) {
             localStorage.setItem(listing.id, comment);
         }
     }
@@ -78,6 +78,7 @@ function saveListingComments () {
 
 function update() {
     saveListingComments();
+    updateHistory();
     updateCounter();
     updateListings();
 }
@@ -94,7 +95,9 @@ function addListing() {
 
 function clearHistory() {
     if (window.confirm("This will erase all listing history.")) {
+        const themePref = localStorage.getItem("lightMode")
         localStorage.clear();
+        localStorage.setItem("lightMode", themePref)
         updateHistory([]);
         update();
     }
