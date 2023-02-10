@@ -11,15 +11,9 @@ function getHistory() {
     return JSON.parse(localStorage.history);
 }
 
-<<<<<<< HEAD
 function updateHistory(history) {
     const filteredHistory = history.filter(e => e > +new Date() - 72*3600*1000)
     localStorage.setItem('history', JSON.stringify(filteredHistory));
-=======
-function updateHistory(history = getHistory()) {
-    const filteredHistory = history.filter(e => getHoursFromReset(e) > -72)
-    localStorage.setItem('history', JSON.stringify(history));
->>>>>>> ee2d4754c21ae4cc2ef336c8fea25f812c6ff53c
 }
 
 function pushHistory(comment) {
