@@ -1,14 +1,17 @@
 <head>
     <META http-equiv="Content-Script-Type" content="text/javascript">
     <link rel="stylesheet" href="style/style.css">
+    <link rel="icon" href="https://cdn-lostark.game.onstove.com/2018/obt/assets/images/common/icon/favicon.ico">
     <script src="script.js"></script>
+    <title>Lost Ark Listing Tracker</title>
 </head>
 
-<body onload="update(); setInterval(update, 10000)">
+<body>
     <div id="note">
         <h1>Lost Ark Listing Tracker</h1>
         Times are local</br>
         Listings reset automatically at 10:00 UTC</br>
+        <div id="lastUpdate"></div>
         <p></p>
         <button class="button" id="dark" onclick="toggleLight()">Toggle dark mode</button>
         <p></p>

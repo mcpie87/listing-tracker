@@ -11,9 +11,15 @@ function getHistory() {
     return JSON.parse(localStorage.history);
 }
 
+<<<<<<< HEAD
 function updateHistory(history) {
     const filteredHistory = history.filter(e => e > +new Date() - 72*3600*1000)
     localStorage.setItem('history', JSON.stringify(filteredHistory));
+=======
+function updateHistory(history = getHistory()) {
+    const filteredHistory = history.filter(e => getHoursFromReset(e) > -72)
+    localStorage.setItem('history', JSON.stringify(history));
+>>>>>>> ee2d4754c21ae4cc2ef336c8fea25f812c6ff53c
 }
 
 function pushHistory(comment) {
@@ -60,7 +66,7 @@ function updateListings() {
         `;
         if (getHoursFromReset(dateVal) >= 0) {
             currentValuesNode.appendChild(listing);
-        } else if (getHoursFromReset(dateVal) > -72) {
+        } else {
             historyNode.appendChild(listing);
         }
     })
@@ -71,7 +77,7 @@ function saveListingComments () {
     const listings = document.getElementsByClassName("listing")
     for (const listing of listings) {
         const comment = listing.querySelector(".listingComment").textContent
-        if (localStorage.getItem(listing.id)) {
+        if (localStorage.getItem(listing.id) !== null) {
             localStorage.setItem(listing.id, comment);
         }
     }
@@ -79,8 +85,11 @@ function saveListingComments () {
 
 function update() {
     saveListingComments();
+    updateHistory();
     updateCounter();
     updateListings();
+    const lastUpdate = document.getElementById("lastUpdate");
+    lastUpdate.textContent = "Last updated at " + (new Date()).toString().substring(16, 24);
 }
 
 function addListing() {
@@ -88,14 +97,15 @@ function addListing() {
         window.alert("Daily listing limit has been reached.")
     } else {
         pushHistory(document.getElementById("comment").value);
-        document.getElementById("comment").value = ""
         update();
     }
 }
 
 function clearHistory() {
     if (window.confirm("This will erase all listing history.")) {
+        const themePref = localStorage.getItem("lightMode")
         localStorage.clear();
+        localStorage.setItem("lightMode", themePref)
         updateHistory([]);
         update();
     }
@@ -122,10 +132,16 @@ if (!localStorage.history) {
 }
 
 window.addEventListener('load', function() {
+    update(); 
+    this.setInterval(update, 300000);
     if (typeof localStorage.lightMode === 'undefined' || localStorage.lightMode === 'undefined') {
         localStorage.lightMode = false;
     }
     if (JSON.parse(localStorage.lightMode)) {
         turnOnLight();
     }
+});
+
+window.addEventListener('unload', function() {
+    update();
 });
