@@ -79,7 +79,7 @@ function saveListingComments () {
 
 function update() {
     saveListingComments();
-    updateHistory();
+    updateHistory(getHistory());
     updateCounter();
     updateListings();
     const lastUpdate = document.getElementById("lastUpdate");
