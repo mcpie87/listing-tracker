@@ -12,9 +12,10 @@ function getHistory() {
 }
 
 function updateHistory(history) {
-    const filteredHistory = history.filter(e => e[0] > 72*3600*1000)
-    localStorage.setItem('history', JSON.stringify(history));
+    const filteredHistory = history.filter(e => e > +new Date() - 72*3600*1000)
+    localStorage.setItem('history', JSON.stringify(filteredHistory));
 }
+
 function pushHistory(comment) {
     const history = getHistory();
     const dateVal = new Date();

@@ -43,11 +43,11 @@
 }
 
 .listingDate {
-    width: 210px;
+    min-width: 210px;
 }
 
 .listingComment {
-    width: 220px;
+    min-width: 220px;
 }
 
 #counter {
